@@ -8,14 +8,13 @@ Dosen Pengampu   : Muhammad Najamuddin Dwi Miharja, S.Kom, M.Kom<br>
 
 ## Penjelasan Program
 1. Impor pustaka dan modul yang diperlukan:
-    - cv2: Pustaka OpenCV untuk memanipulasi gambar.
-    - numpy: Pustaka untuk operasi numerik dan pemrosesan array.
-    - math: Modul untuk fungsi matematika dasar.
-    - matplotlib.pyplot: Pustaka untuk membuat plot dan visualisasi data.
-    - tkinter.Tk: Modul Tkinter untuk membuat GUI.
-    - tkinter.Button: Kelas Button dari modul Tkinter untuk membuat tombol di GUI.
-    - tkinter.filedialog.askopenfilename: Fungsi untuk memunculkan dialog pemilihan file.
-2. Mendefinisikan fungsi median_filter(image, kernel_size): Fungsi ini menggunakan cv2.medianBlur untuk menerapkan filter median pada gambar dengan ukuran kernel yang ditentukan. Filter median digunakan untuk mengurangi noise pada gambar.
+    - from PIL import Image, ImageTk: Digunakan untuk mengolah gambar menggunakan library PIL        (Python Imaging Library) dan menampilkan gambar di antarmuka GUI menggunakan ImageTk.
+    - import numpy as np: Digunakan untuk operasi array dan manipulasi gambar menggunakan            array numpy.
+    - import matplotlib.pyplot as plt: Digunakan untuk membuat histogram gambar.
+    - import tkinter as tk: Digunakan untuk membuat antarmuka GUI.
+    - from tkinter import filedialog: Digunakan untuk membuka jendela dialog pemilihan file          gambar.
+
+2. Mendefinisikan fungsi median_filter(image, kernel_size): Fungsi ini menerima input berupa      objek gambar dan ukuran kernel filter median. Fungsi ini akan menerapkan filter median pada    gambar dengan memindai setiap piksel dalam gambar dan menggantinya dengan nilai median dari    piksel-piksel di sekitarnya. Fungsi ini mengembalikan gambar hasil filter median.
    ```py
     def median_filter(image, kernel_size):
     image_array = np.array(image)
@@ -42,7 +41,7 @@ Dosen Pengampu   : Muhammad Najamuddin Dwi Miharja, S.Kom, M.Kom<br>
 
     return Image.fromarray(filtered_image.astype('uint8'))
    ```
-3. Mendefinisikan fungsi mse(original_image, processed_image): Fungsi ini menghitung Mean Squared Error (MSE) antara gambar asli dan gambar yang telah diproses. MSE mengukur perbedaan antara dua gambar dengan menghitung rata-rata perbedaan kuadrat piksel-pikselnya.
+3. Mendefinisikan fungsi mse(original_image, filtered_image): Fungsi ini menerima dua objek gambar, yaitu gambar asli dan gambar hasil filter median. Fungsi ini menghitung nilai MSE antara dua gambar dengan membandingkan piksel-piksel pada posisi yang sama. Fungsi ini mengembalikan nilai MSE.
    ```py
     def mse(original_image, filtered_image):
     original_pixels = np.array(original_image)
@@ -50,7 +49,7 @@ Dosen Pengampu   : Muhammad Najamuddin Dwi Miharja, S.Kom, M.Kom<br>
     error = np.mean((original_pixels - filtered_pixels) ** 2)
     return error
    ```
-4. Mendefinisikan fungsi psnr(original_image, processed_image): Fungsi ini menghitung Peak Signal-to-Noise Ratio (PSNR) antara gambar asli dan gambar yang telah diproses. PSNR mengukur kualitas rekonstruksi gambar dengan membandingkan sinyal gambar dengan derau yang dihasilkan oleh proses pemrosesan.
+4. Mendefinisikan fungsi psnr(original_image, filtered_image): Fungsi ini menerima dua objek gambar, yaitu gambar asli dan gambar hasil filter median. Fungsi ini menghitung nilai PSNR berdasarkan nilai MSE antara dua gambar. Fungsi ini mengembalikan nilai PSNR.
     ```py
     def psnr(original_image, filtered_image):
     max_intensity = 255
@@ -58,7 +57,7 @@ Dosen Pengampu   : Muhammad Najamuddin Dwi Miharja, S.Kom, M.Kom<br>
     psnr_val = 10 * np.log10((max_intensity ** 2) / mse_val)
     return psnr_val
    ```
-5. Mendefinisikan fungsi select_and_process_image(): Fungsi ini digunakan sebagai callback untuk tombol "Pilih Gambar" di GUI. Fungsi ini melakukan langkah-langkah berikut:
+5. Mendefinisikan fungsi select_image() dan load_image(file_path): Fungsi ini dipanggil saat tombol "Select Image" di klik dan menerima path yang dipilih. Fungsi ini melakukan langkah-langkah berikut:
     ```py
     def select_image():
     file_path = filedialog.askopenfilename(filetypes=[("Image files", "*.jpg;*.jpeg;*.png")])
@@ -115,24 +114,65 @@ Dosen Pengampu   : Muhammad Najamuddin Dwi Miharja, S.Kom, M.Kom<br>
     # Update the canvas view
     canvas.update()
      ```
-6. Membuat jendela Tkinter menggunakan tkinter.Tk().
+6. Mendefinisikan fungsi get_histogram(image) : Fungsi ini menerima objek gambar dan menghitung histogram gambar menggunakan numpy. Fungsi ini mengembalikan array histogram.
     ```py
-      root = tk.Tk()
+    def get_histogram(image):
+    image_array = np.array(image)
+    hist, _ = np.histogram(image_array.flatten(), bins=256, range=[0, 256])
+    return hist
     ```
-7. Mengatur judul jendela menggunakan window.title.
+7. Mendefinisikan Fungsi plot_histogram(hist, channel, x, y): Fungsi ini menerima array histogram, channel (saluran) gambar, dan koordinat x dan y untuk menampilkan histogram pada antarmuka GUI. Fungsi ini menggunakan matplotlib untuk membuat histogram, menyimpannya sebagai file sementara, dan menampilkan gambar histogram pada antarmuka GUI menggunakan tkinter.
     ```py
-      root.title("UAS AFRA NESYA 312110614")
+    def plot_histogram(hist, channel, x, y):
+    fig, ax = plt.subplots(figsize=(4, 3), dpi=80)
+    ax.bar(range(256), hist, color='black')
+    ax.set_xlabel('Pixel Value')
+    ax.set_ylabel('Frequency')
+    ax.set_title('Histogram Original Photo')
+    ax.set_xlim([0, 256])
+    ax.set_ylim([0, np.max(hist) * 1.1])
+
+    # Save the histogram plot to a temporary image file without transparency
+    plt.savefig('histogram.png', transparent=True, bbox_inches='tight', pad_inches=0)
+    plt.close(fig)
+
+    # Load the temporary image file and display it on the canvas
+    histogram_image = Image.open('histogram.png')
+    histogram_photo = ImageTk.PhotoImage(histogram_image)
+    canvas.create_image(x, y, anchor="nw", image=histogram_photo)
+    canvas.image3 = histogram_photo  # Store reference
     ```
-8. Mengatur ukuran jendela menggunakan window.geometry.
+8. Membuat jendela utama dengan judul "UAS AFRA NESYA 312110614".
+    ```py
+    root = tk.Tk()
+    root.title("UAS AFRA NESYA 312110614")
+    root.geometry("900x700")
+    root.configure(bg="ghost white")
+    ```
+9. Membuat tombol "Select Image" yang memanggil fungsi select_image().
+    ```py
+    select_button = tk.Button(root, text="Select Image", command=select_image, bg="ghost            white")
+    select_button.pack()
+    ```
+10. Mengatur ukuran jendela menggunakan window.geometry.
     ```py
       root.geometry("900x700")
     ```
-9. Membuat tombol "Pilih Gambar" menggunakan tkinter.Button dengan callback ke fungsi select_and_process_image.
+11. Membuat area canvas untuk menampilkan gambar, teks, dan histogram.
     ```py
-      select_button = tk.Button(root, text="Select Image", command=select_image, bg="ghost white")
-      select_button.pack()
+    canvas = tk.Canvas(root, width=900, height=700, bg="turquoise")
+    canvas.pack()
+    canvas.create_text(450, 20, anchor="n", text="MENCARI NILAI MSE DAN PSNR CITRA 300X300             DENGAN MENGGUNAKAN METODE MEDIAN FILTER",fill="black", font=("tahoma", 14))
+    canvas.create_text(70, 80, anchor="w", text="Original Image =", fill="black", font=                ("tahoma", 12))
+    canvas.create_text(450, 80, anchor="w", text="Filtered Image = Median Filter",
+        fill="black", font=("tahoma", 12))
+    original_box = canvas.create_rectangle(70, 100, 370, 400, width=2, outline="black")
+    filtered_box = canvas.create_rectangle(450, 100, 750, 400, width=2, outline="black")
+    mse_psnr_box = canvas.create_rectangle(450, 425, 675, 500, width=2, outline="black")
+        canvas.create_text(465, 460, anchor="w", text= "Hasil MSE dan PSNR", fill="black",
+        font=("tahoma", 12))
     ```
-10. Menjalankan event loop Tkinter menggunakan window.mainloop(). Event loop ini akan menjaga jendela GUI tetap aktif dan menangani interaksi pengguna seperti menekan tombol.
+12. Menjalankan event loop Tkinter menggunakan window.mainloop(). Event loop ini akan menjaga jendela GUI tetap aktif dan menangani interaksi pengguna seperti menekan tombol.
     ```py
       root.mainloop()
     ```
