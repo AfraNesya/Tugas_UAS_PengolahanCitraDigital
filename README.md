@@ -151,7 +151,7 @@ Dosen Pengampu   : Muhammad Najamuddin Dwi Miharja, S.Kom, M.Kom<br>
     ```
 9. Membuat tombol "Select Image" yang memanggil fungsi select_image().
     ```py
-    select_button = tk.Button(root, text="Select Image", command=select_image, bg="ghost            white")
+    select_button = tk.Button(root, text="Select Image", command=select_image, bg="ghost white")
     select_button.pack()
     ```
 10. Mengatur ukuran jendela menggunakan window.geometry.
@@ -162,15 +162,12 @@ Dosen Pengampu   : Muhammad Najamuddin Dwi Miharja, S.Kom, M.Kom<br>
     ```py
     canvas = tk.Canvas(root, width=900, height=700, bg="turquoise")
     canvas.pack()
-    canvas.create_text(450, 20, anchor="n", text="MENCARI NILAI MSE DAN PSNR CITRA 300X300             DENGAN MENGGUNAKAN METODE MEDIAN FILTER",fill="black", font=("tahoma", 14))
-    canvas.create_text(70, 80, anchor="w", text="Original Image =", fill="black", font=                ("tahoma", 12))
-    canvas.create_text(450, 80, anchor="w", text="Filtered Image = Median Filter",
-        fill="black", font=("tahoma", 12))
+    canvas.create_text(450, 20, anchor="n", text="MENCARI NILAI MSE DAN PSNR CITRA 300X300 DENGAN MENGGUNAKAN METODE MEDIAN FILTER",fill="black", font=("tahoma", 14))
+    canvas.create_text(70, 80, anchor="w", text="Original Image =", fill="black", font=("tahoma", 12))
+    canvas.create_text(450, 80, anchor="w", text="Filtered Image = Median Filter", fill="black", font=("tahoma", 12))
     original_box = canvas.create_rectangle(70, 100, 370, 400, width=2, outline="black")
     filtered_box = canvas.create_rectangle(450, 100, 750, 400, width=2, outline="black")
-    mse_psnr_box = canvas.create_rectangle(450, 425, 675, 500, width=2, outline="black")
-        canvas.create_text(465, 460, anchor="w", text= "Hasil MSE dan PSNR", fill="black",
-        font=("tahoma", 12))
+    mse_psnr_box = canvas.create_rectangle(450, 425, 675, 500, width=2, outline="black") canvas.create_text(465, 460, anchor="w", text= "Hasil MSE dan PSNR", fill="black", font=("tahoma", 12))
     ```
 12. Menjalankan event loop Tkinter menggunakan window.mainloop(). Event loop ini akan menjaga jendela GUI tetap aktif dan menangani interaksi pengguna seperti menekan tombol.
     ```py
