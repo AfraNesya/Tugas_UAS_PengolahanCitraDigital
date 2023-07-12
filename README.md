@@ -177,5 +177,5 @@ Dosen Pengampu   : Muhammad Najamuddin Dwi Miharja, S.Kom, M.Kom<br>
 ### Berikut adalah hasil dari program diatas
 1. Pertama kita akan disuguhi GUI untuk pilih Gambar
    ![hasill](screenshot/hasil.png)
-2. Kemudian Setelah Memilih Gambar, kita akan melihat GUI tentang Perbandingan Original Image dan Median filter serta mse dan psnr nya, seperti berikut
+2. Kemudian Setelah Memilih Gambar, kita akan melihat GUI tentang Perbandingan Original Image dan Median filter serta histogram gambar asli berikut hasil mse dan psnr nya, seperti berikut
    ![hasill](screenshot/hasil1.png)
